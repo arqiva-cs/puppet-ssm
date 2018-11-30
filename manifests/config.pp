@@ -13,7 +13,7 @@
 #
 class ssm::config(
   $proxy_host       = $ssm::params::proxy_host,
-  $service_name     = $ssm::params::manage_service,
+  $service_name     = $ssm::params::service_name,
   $service_provider = $ssm::params::service_provider,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
