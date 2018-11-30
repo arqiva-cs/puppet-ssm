@@ -7,8 +7,13 @@
 # [*proxy_host*]
 #   proxy_host to be used by ssm agent, <HOST-ADDR>:<PORT>
 #
+# [*service_name*]
+#   String indicating the name of the SSM service. The correct value is
+#   automatically determined based on the platform.
+#
 class ssm::config(
-  $proxy_host = $ssm::params::proxy_host,
+  $proxy_host   = $ssm::params::proxy_host,
+  $service_name = $ssm::params::manage_service,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
   if $proxy_host {
