@@ -7,7 +7,7 @@
 # [*activation_code*]
 #   Activation Code provided by System manager upon creation of an activation. Required.
 #
-# [*acivation_id*]
+# [*activation_id*]
 #   Activation ID provided by System manager upon creation of an activation. Required.
 #
 # [*region*]
@@ -16,13 +16,13 @@
 #
 class ssm::register(
   $activation_code = $ssm::params::acivation_code,
-  $acivation_id    = $ssm::params::acivation_id,
+  $activation_id    = $ssm::params::activation_id,
   $region          = $ssm::params::region,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
-  if ($activation_code) and ($acivation_id) {
+  if ($activation_code) and ($activation_id) {
     exec { 'register-ssm-agent':
-      command   => "amazon-ssm-agent -register -code ${activation_code} -id ${acivation_id} -region ${region}",
+      command   => "amazon-ssm-agent -register -code ${activation_code} -id ${activation_id} -region ${region}",
       path      => '/bin:/usr/bin:/usr/local/bin:/usr/sbin',
       logoutput => on_failure,
       timeout   => 600,
