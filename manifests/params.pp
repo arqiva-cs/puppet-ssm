@@ -9,6 +9,7 @@ class ssm::params {
   $region          = undef
   $activation_code = false
   $activation_id   = false
+  $proxy_host      = false
   $service_enable  = true
   $service_ensure  = 'running'
 

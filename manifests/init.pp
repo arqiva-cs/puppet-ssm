@@ -74,6 +74,7 @@ class ssm (
   $region          = $ssm::params::region,
   $activation_code = $ssm::params::activation_code,
   $activation_id   = $ssm::params::activation_id,
+  $proxy_host      = $ssm::params::proxy_host,
   $service_enable  = $ssm::params::service_enable,
   $service_ensure  = $ssm::params::service_ensure,
   $service_name    = $ssm::params::service_name,
@@ -113,6 +114,10 @@ class ssm (
     url      => $url,
   }
 
+  class { 'ssm::config':
+    proxy_host => $proxy_host,
+  }
+
   class { 'ssm::register':
     activation_code => $activation_code,
     activation_id   => $activation_id,
@@ -126,6 +131,6 @@ class ssm (
     service_name   => $service_name,
   }
 
-  anchor { 'ssm::begin': } -> Class['ssm::install'] -> Class['ssm::register'] -> Class['ssm::service'] -> anchor { 'ssm::end': }
+  anchor { 'ssm::begin': } -> Class['ssm::install'] ->  Class['ssm::config'] -> Class['ssm::register'] -> Class['ssm::service'] -> anchor { 'ssm::end': }
   # lint:endignore
 }
