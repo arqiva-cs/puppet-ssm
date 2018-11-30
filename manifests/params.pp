@@ -19,12 +19,29 @@ class ssm::params {
       $package = 'rpm'
       $provider = 'rpm'
       $flavor = 'linux'
+      $service_provider = 'systemd'
     }
-    'Debian', 'Ubuntu': {
+    'Debian': {
       $service_name = 'amazon-ssm-agent'
       $package = 'deb'
       $provider = 'dpkg'
       $flavor = 'debian'
+      if versioncmp($::operatingsystemmajrelease, '8') >= 0 {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = 'init'
+      }
+    }
+    'Ubuntu': {
+      $service_name = 'amazon-ssm-agent'
+      $package = 'deb'
+      $provider = 'dpkg'
+      $flavor = 'debian'
+      if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = 'upstart'
+      }
     }
     default: {
       fail("Module not supported on ${::operatingsystem}.")
