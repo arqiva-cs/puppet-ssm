@@ -14,10 +14,15 @@
 #   String indicating the AWS region in which the instance is running. Required.
 #   Defaults to `undef`.
 #
+# [*service_name*]
+#   String indicating the name of the SSM service. The correct value is
+#   automatically determined based on the platform.
+#
 class ssm::register(
-  $activation_code = $ssm::params::acivation_code,
+  $activation_code  = $ssm::params::acivation_code,
   $activation_id    = $ssm::params::activation_id,
-  $region          = $ssm::params::region,
+  $service_name     = $ssm::params::service_name,
+  $region           = $ssm::params::region,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
   if ($activation_code) and ($activation_id) {
@@ -26,6 +31,7 @@ class ssm::register(
       path      => '/bin:/usr/bin:/usr/local/bin:/usr/sbin',
       logoutput => on_failure,
       timeout   => 600,
+      notify    => Service[$service_name],
       creates   => '/var/lib/amazon/ssm/Vault/Store/RegistrationKey',
     }
   }
