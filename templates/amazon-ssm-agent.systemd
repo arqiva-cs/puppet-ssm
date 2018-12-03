@@ -1,0 +1,17 @@
+[Unit]
+Description=amazon-ssm-agent
+After=network-online.target
+
+[Service]
+Environment="http_proxy=http://<%= @proxy_host %>"
+Environment="https_proxy=https://<%= @proxy_host %>"
+Environment="no_proxy=169.254.169.254"
+Type=simple
+WorkingDirectory=/usr/bin/
+ExecStart=/usr/bin/amazon-ssm-agent
+KillMode=process
+Restart=on-failure
+RestartSec=15min
+
+[Install]
+WantedBy=network-online.target

@@ -65,16 +65,19 @@
 # lint:ignore:80chars
 #
 class ssm (
-  $custom_path    = $ssm::params::custom_path,
-  $custom_url     = $ssm::params::custom_url,
-  $flavor         = $ssm::params::flavor,
-  $manage_service = $ssm::params::manage_service,
-  $package        = $ssm::params::package,
-  $provider       = $ssm::params::provider,
-  $region         = $ssm::params::region,
-  $service_enable = $ssm::params::service_enable,
-  $service_ensure = $ssm::params::service_ensure,
-  $service_name   = $ssm::params::service_name,
+  $custom_path     = $ssm::params::custom_path,
+  $custom_url      = $ssm::params::custom_url,
+  $flavor          = $ssm::params::flavor,
+  $manage_service  = $ssm::params::manage_service,
+  $package         = $ssm::params::package,
+  $provider        = $ssm::params::provider,
+  $region          = $ssm::params::region,
+  $activation_code = $ssm::params::activation_code,
+  $activation_id   = $ssm::params::activation_id,
+  $proxy_host      = $ssm::params::proxy_host,
+  $service_enable  = $ssm::params::service_enable,
+  $service_ensure  = $ssm::params::service_ensure,
+  $service_name    = $ssm::params::service_name,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
   if $custom_url {
@@ -111,6 +114,16 @@ class ssm (
     url      => $url,
   }
 
+  class { 'ssm::config':
+    proxy_host => $proxy_host,
+  }
+
+  class { 'ssm::register':
+    activation_code => $activation_code,
+    activation_id   => $activation_id,
+    region          => $region,
+  }
+
   class { 'ssm::service':
     manage_service => $manage_service,
     service_enable => $service_enable,
@@ -118,6 +131,6 @@ class ssm (
     service_name   => $service_name,
   }
 
-  anchor { 'ssm::begin': } -> Class['ssm::install'] -> Class['ssm::service'] -> anchor { 'ssm::end': }
+  anchor { 'ssm::begin': } -> Class['ssm::install'] ->  Class['ssm::config'] -> Class['ssm::register'] -> Class['ssm::service'] -> anchor { 'ssm::end': }
   # lint:endignore
 }

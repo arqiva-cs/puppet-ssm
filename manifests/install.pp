@@ -18,19 +18,29 @@
 #   can be set using `ssm::custom_url` otherwise, the correct default URL is
 #   generated in ssm::init.
 #
+# [*proxy_host*]
+#   proxy_host to be used by ssm agent, <HOST-ADDR>:<PORT>
+#
 class ssm::install(
-  $path     = undef,
-  $provider = undef,
-  $url      = undef,
+  $path       = undef,
+  $provider   = undef,
+  $url        = undef,
+  $proxy_host = $ssm::params::proxy_host,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
   validate_absolute_path($path)
   validate_string($url)
 
+  $proxy_args = $proxy_host ? {
+    false    => undef,
+    default  => [ 'use_proxy=yes', "http_proxy=http://${proxy_host}", "https_proxy=https://${proxy_host}"],
+  }
+
   exec { 'download_ssm-agent':
-    command => "/usr/bin/wget -T60 -N https://${url} -O ${path}",
-    path    => '/bin:/usr/bin:/usr/local/bin:/usr/sbin',
-    creates => $path,
+    command     => "/usr/bin/wget -T60 -N https://${url} -O ${path}",
+    environment => $proxy_args,
+    path        => '/bin:/usr/bin:/usr/local/bin:/usr/sbin',
+    creates     => $path,
   }
 
   package { 'amazon-ssm-agent':

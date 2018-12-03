@@ -21,10 +21,11 @@
 #   automatically determined based on the platform.
 #
 class ssm::service(
-  $manage_service = $ssm::params::manage_service,
-  $service_enable = $ssm::params::service_enable,
-  $service_ensure = $ssm::params::service_ensure,
-  $service_name   = $ssm::params::manage_service,
+  $manage_service   = $ssm::params::manage_service,
+  $service_enable   = $ssm::params::service_enable,
+  $service_ensure   = $ssm::params::service_ensure,
+  $service_name     = $ssm::params::manage_service,
+  $service_provider = $ssm::params::service_provider,
 ) inherits ssm::params { # lint:ignore:class_inherits_from_params_class
 
   if $manage_service {
@@ -32,6 +33,7 @@ class ssm::service(
       'Debian': {
         service { $service_name:
           ensure    => $service_ensure,
+          provider  => $service_provider,
           enable    => $service_enable,
           subscribe => Package['amazon-ssm-agent'],
           require   => Class['ssm::install'],
@@ -40,6 +42,7 @@ class ssm::service(
       'Ubuntu': {
         service { $service_name:
           ensure    => $service_ensure,
+          provider  => $service_provider,
           enable    => $service_enable,
           subscribe => Package['amazon-ssm-agent'],
           require   => Class['ssm::install'],
@@ -48,6 +51,7 @@ class ssm::service(
       'CentOS': {
         service { $service_name:
           ensure    => $service_ensure,
+          provider  => $service_provider,
           enable    => $service_enable,
           subscribe => Package['amazon-ssm-agent'],
           require   => Class['ssm::install'],
@@ -55,15 +59,16 @@ class ssm::service(
       }
       'Amazon': {
         service { $service_name:
-          ensure    => $service_ensure,
+          ensure     => $service_ensure,
+          provider   => $service_provider,
           hasstatus  => true,
           hasrestart => true,
           restart    => "/sbin/restart ${service_name}",
           start      => "/sbin/start ${service_name}",
           status     => "/sbin/status ${service_name}",
           stop       => "/sbin/stop ${service_name}",
-          subscribe => Package['amazon-ssm-agent'],
-          require   => Class['ssm::install'],
+          subscribe  => Package['amazon-ssm-agent'],
+          require    => Class['ssm::install'],
         }
       }
       default: {
