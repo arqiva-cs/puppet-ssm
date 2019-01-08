@@ -20,7 +20,7 @@ class ssm::config(
   if $proxy_host {
     case $service_provider {
       'systemd': {
-        file { '/lib/systemd/system/amazon-ssm-agent.service':
+        file { '/etc/systemd/system/amazon-ssm-agent.service':
           ensure  => present,
           content => template('ssm/amazon-ssm-agent.systemd'),
         } ~> exec { 'ssm-systemd-reload':
