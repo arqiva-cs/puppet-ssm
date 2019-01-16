@@ -108,6 +108,8 @@ class ssm (
     $path = "/opt/amazon-ssm-agent.${package}"
   }
 
+  ensure_packages(['wget'], {ensure => present})
+
   class { 'ssm::install':
     path     => $path,
     provider => $provider,

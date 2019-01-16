@@ -36,9 +36,6 @@ class ssm::install(
     default  => [ 'use_proxy=yes', "http_proxy=http://${proxy_host}", "https_proxy=https://${proxy_host}"],
   }
 
-  package {'wget':
-    ensure => installed,
-  } ->
   exec { 'download_ssm-agent':
     command     => "/usr/bin/wget -T60 -N https://${url} -O ${path}",
     environment => $proxy_args,
